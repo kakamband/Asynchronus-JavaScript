@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Asynchronous JavaScript</title>
+</head>
+<body>
+    <h1>Asynchronous JavaScript</h1>
+    <script>
+      // 'Callback Hell' / 'Pyramid of Doom'
+        // function getRecipe() {
+        //   setTimeout(() => {
+        //     const recipeID = [512, 231, 615, 356, 353];
+        //     console.log(recipeID);
+
+        //     setTimeout((id) => {
+        //       const recipe = {title: `Fresh tomato pasta`, publisher: `Peter`};
+        //       console.log{title: `Fresh tomato pasta`, publisher: `Peter`};
+
+        //       setTimeout(publisher => {
+        //         const recipe = {
+        //           title: `Italian pizza`,
+        //           publisher: `Pete`,
+        //         }
+        //         console.log(publisher)
+        //       }, 1500, recipe.publisher)
+        //     }, 1500, recipeID[[0]]);
+        //   }, 1500)
+        // };
+        // getRecipe();
+
+// -----------------------------------------------------------
+
+        //  ES6 Promises (escaping 'callback hell')
+          // const getIDs = new Promise((resolve, reject) => {
+          //   // Inner Promise function is claled the executo function and has...
+          //   // ...the ability to resolve or reject the promise
+          //   setTimeout(() => {
+          //     resolve([512, 231, 615, 356, 353]);
+          //   }, 1500)
+          // })
+
+          // const getRecipe = recID => {
+          //   return new Promise((resolve, rejct) => {
+          //     setTimeout(ID => {
+          //       const recipe = {title: `Fresh tomato pasta`, publisher: `Peter`};
+          //       resolve({
+          //         recipe,
+          //         log: `${ID}: ${recipe.title}`
+          //         });
+          //       }, 1500, recID)
+          //   })
+          // };
+
+          // const getRelated = publisher => {
+          //   return new Promise((resolve, reject) => {
+          //     setTimeout(pub => {
+          //       const recipe = {
+          //         title: `Italian pizza`,
+          //         publisher: `Pete`,
+          //       }
+
+          //       resolve(`${pub}: ${recipe.title}`);
+          //     }, 150, publisher)
+          //   })
+          // };
+
+          // Consuming Promises
+          // getIDs
+          // .then(IDs => {
+          //   console.log(IDs);
+          //   return getRecipe(IDs[2])
+          // })
+          // .then((recipe) => {
+          //   console.log(recipe.log);
+          //   return getRelated(recipe.recipe.publisher);
+          // })
+          // .then((recipe) => {
+          //   console.log(recipe);
+          // })
+          // .catch(error => {
+          //   console.log(`error!`);
+          // })
+
+          // ES8 ASYNC and AWAIT Consuming Promises - cleaner and easier
+          // async function getRecipesAW() {
+          //   const IDs = await getIDs;
+          //   console.log(IDs);
+          //   const recipe = await getRecipe(IDs[2]);
+          //   console.log(recipe.log);
+          //   const related = await getRelated(recipe.recipe.publisher);
+          //   console.log(related);
+
+          //   return recipe.recipe;
+          // }
+
+          // // getRecipesAW returns a promis so we can use the .then to utilise the async/await data
+          // getRecipesAW().then(result => console.log(`${result.title} is yummy!!`));
+
+// -----------------------------------------------------------
+
+      // AJAX - asynchronus javascript and xml / APIs - Application Programming Interface
+
+
+      // AJAX/APIs with .then() and .catch()
+      function getWeather(woeid) {
+        fetch(`https://cors-anywhere.herokuapp.com/https://www.metaweather.com/api/location/${woeid}/`)
+        .then(result => {
+          return result.json();
+        })
+        .then(jsonData => {
+          // console.log(jsonData);
+          const today = jsonData.consolidated_weather[0];
+          console.log(`Temp Today: ${jsonData.title}, between ${today.min_temp} and ${today.max_temp}`)
+        })
+        .catch(error => {
+          console.log(error);
+        }); 
+      }
+      getWeather(44418);
+      getWeather(2487956);
+
+      // AJAX/APIs with ASYNC and AWAIT + TRY and CATCH (seperate to async/await but useful for error handling)
+      async function getWeatherAW(woeid) {
+        try {
+          const result = await fetch(`https://cors-anywhere.herokuapp.com/https://www.metaweather.com/api/location/${woeid}/`)
+          const data = await result.json();
+          const tomorrow = data.consolidated_weather[1];
+          console.log(`Temp Tomorrow: ${data.title}, between ${tomorrow.min_temp} and ${tomorrow.max_temp}`)
+        
+          return data;
+        } catch(err) {
+          alert(err);
+        }
+      }
+      getWeatherAW(44418);
+
+      let london;
+      getWeatherAW(2487956).then(data => {
+        london = data;
+        console.log(london);
+      });
+    </script>
+</body>
+</html>
